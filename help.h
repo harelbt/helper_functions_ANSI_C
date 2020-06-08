@@ -1,5 +1,6 @@
 /*
  Created by Harel Bentabou on 07/06/2020.
+ Update  08/06/2020: new funcs: 1)translate_to_binary 2)int_to_str 3)invert_long_arr(private / static).
 */
 
 #ifndef HELP_H
@@ -7,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
+#include <math.h>
 
 #define INPUT 10
 #define OUTPUT 11
@@ -82,4 +85,24 @@ char* get_line_no_spaces(FILE* file);
  * @return the next word
  */
 char* get_next_word(FILE* file);
+/**
+ * TWO PARAMETERS.
+ * translates strings and numbers to binary base
+ * returns the result in a long array
+ * ----
+ * for char, int and long, every number is stored in a different cell (2 = |1|0|)
+ * for strings, every char's translation is stored in a different cell ("12" = |1|10|)
+ * ----
+ * first parameter - "char"|"int"|"Int"|"long"|"string"|"String"|"char*"|"Char*"|"const char*"|"Const char*"|
+ * @param data_type string that tells the data type of the second parameter
+ * @param ... A value to convert
+ * @return long array with a binary translation
+ */
+long* translate_to_binary(const char* data_type,...);
+/**
+ * returns an int as a string (char*)
+ * @param number to convert
+ * @return a string representation of the number (int)
+ */
+char* int_to_str(int number);
 #endif /*HELP_H*/

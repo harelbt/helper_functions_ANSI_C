@@ -1,7 +1,10 @@
 /*
  Created by Harel Bentabou on 07/06/2020.
+ Update  08/06/2020: new funcs: 1)translate_to_binary 2)int_to_str 3)invert_long_arr(private / static).
 */
 #include "help.h"
+static void invert_long_arr(long*, int);
+
 /*returns the first char after the white chars*/
 int skip_white_chars(FILE* file){
     int ch;
@@ -366,4 +369,172 @@ char* get_next_word(FILE* file){
     }
     /*_____________________________________________________________*/
     return string;
+}
+/*translates strings and numbers to binary base
+ * returns the result in a long array
+ * for char, int and long, every number is stored in a different cell (2 = |1|0|)
+ * for strings, every char's translation is stored in a different cell ("12" = |1|10|)*/
+long* translate_to_binary(const char* data_type,...) {
+    va_list argp;
+    va_start(argp, data_type);
+    /*_____________________________________________________________*/
+    if (!strcmp(data_type, "char") || !strcmp(data_type, "int") || !strcmp(data_type, "Int")
+            || !strcmp(data_type, "long")) {/*for int, long and char*/
+        long *translation = allocate_arr_memory(2, "long");/*minimum required size*/
+        long to_translate;
+        long reminder;
+        long curr_index = 0;
+        /*gets value from the arguments*/
+        if (!strcmp(data_type, "long"))/*data_type == "long"*/
+            to_translate = va_arg(argp, long);
+        else /*data_type == "int" || "char"*/
+            to_translate = va_arg(argp, int);
+
+        while (to_translate != 0) {/*every iteration finds the next 0 or 1*/
+            reminder = to_translate % 2;
+            to_translate /= 2;
+            translation[curr_index] = reminder;
+            curr_index++;
+            /*redetermines size according to curr_index*/
+            translation = realloc_arr_memory(translation, curr_index + 1, "long");
+        }
+        /*-1 in the last cell*/
+        translation[curr_index] = -1;
+        /*array needs to be inverted*/
+        invert_long_arr(translation, curr_index + 1);
+        /*_____________________________________________________________*/
+        return translation;
+    }
+
+    if ((!strcmp(data_type,"string") )|| (!strcmp(data_type,"String")) || (!strcmp(data_type,"char*"))
+    || (!strcmp(data_type,"const char*")) || (!strcmp(data_type,"Char*")) || (!strcmp(data_type,"Const char*"))) {/*for int, long and char*/
+        long *translation = allocate_arr_memory(1, "long");/*minimum required size*/
+        /*gets value from the arguments*/
+        const char *string = va_arg(argp, char*);
+        long binary = 0;
+        long reminder;
+        long i = 1;
+        long j = 0;
+
+        while (string[j] != '\0') {
+            /*copying char*/
+            translation[j] = (long) string[j];
+            /*translating char*/
+            while (translation[j] != 0) {
+                reminder = translation[j] % 2;
+                translation[j] /= 2;
+                binary += reminder * i;
+                i *= 10;
+            }
+            /*copying translation to the array*/
+            translation[j] = binary;
+            /*recalibrate variables*/
+            binary = 0;
+            i = 1;
+            j++;
+            /*redetermines size according to the index*/
+            translation = realloc_arr_memory(translation, j + 1, "long");
+        }
+        /*puts -1 in the end*/
+        translation[j] = -1;
+
+        return translation;
+    }
+    /*returns NULL if data type hasn't been recognised*/
+    return NULL;
+}
+/*returns an int as a string (char*)*/
+char* int_to_str(int number) {
+    int number_copy = number;
+    int count = 0;
+    int negative = 0;
+    char *str;
+    if (number < 0)
+        negative = 1;
+    /*counts "length"*/
+    while (number_copy != 0) {
+        count++;
+        number_copy /= 10;
+    }
+    /*allocating the necessary memory*/
+    if (negative == 1) {
+        /*saves place for a '-'*/
+        str = allocate_arr_memory(count + 2, "char");
+        str[count+1] = '\0';
+        count++;/*starts ahead to save place for '-'*/
+    } else {
+        str = allocate_arr_memory(count + 1, "char");
+        str[count] = '\0';
+    }
+    /*enters values to the string*/
+    while (count != 0) {
+        /*gets last number*/
+        number_copy = number % 10;
+        number /= 10;
+        /*updates the index*/
+        count--;
+        /*if the number is negative, adds a '-' to the start (cell pre saved)*/
+        if (negative == 1 && count == 0) {
+            str[count] = '-';
+            break;
+        }
+        /*inserts accordingly*/
+        switch (abs(number_copy)) {
+            case 0: {
+                str[count] = '0';
+                break;
+            }
+            case 1: {
+                str[count] = '1';
+                break;
+            }
+            case 2: {
+                str[count] = '2';
+                break;
+            }
+            case 3: {
+                str[count] = '3';
+                break;
+            }
+            case 4: {
+                str[count] = '4';
+                break;
+            }
+            case 5: {
+                str[count] = '5';
+                break;
+            }
+            case 6: {
+                str[count] = '6';
+                break;
+            }
+            case 7: {
+                str[count] = '7';
+                break;
+            }
+            case 8: {
+                str[count] = '8';
+                break;
+            }
+            case 9: {
+                str[count] = '9';
+                break;
+            }
+        }
+    }
+    return str;
+}
+
+/*(private) inverting long arrays, ignores last cell*/
+static void invert_long_arr(long* array, int length){
+    long i = 0;
+    long j = length - 2;
+    long swap;
+    while (i < j){
+        swap = array[i];
+        array[i] = array[j];
+        array[j] = swap;
+        i++;
+        j--;
+    }
 }
