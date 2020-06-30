@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/harel/Desktop/projects/C/assembler/assembler.c
+words.h
+C:/Users/harel/Desktop/projects/C/assembler/words.h
+helpfunctions.h
+C:/Users/harel/Desktop/projects/C/assembler/helpfunctions.h
+
+C:/Users/harel/Desktop/projects/C/assembler/helpfunctions.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+stdarg.h
+-
+math.h
+-
+
+C:/Users/harel/Desktop/projects/C/assembler/words.h
+helpfunctions.h
+C:/Users/harel/Desktop/projects/C/assembler/helpfunctions.h
+
